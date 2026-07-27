@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linktree · Hanging Tree</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&family=Playfair+Display:wght@500&display=swap');
+
+    :root {
+      --sky-top: #e8f0f8;
+      --sky-mid: #f0e8f5;
+      --sky-bottom: #f8f4f0;
+      --hill1: #c8e0d0;
+      --hill2: #b5d4c4;
+      --hill3: #a3c8b5;
+      --text: #4a3f35;
+      --soft-shadow: 0 10px 28px rgba(100, 80, 60, 0.13);
+      --theme-active-bg: #d8f3e5;
+      --theme-active-border: #71c693;
+      --theme-accent: #2e7d32;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      height: 100%;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bottom) 100%);
+      overflow-x: hidden;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Quicksand', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: background 0.8s ease;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bottom) 100%);
+    }
+
+    /* Spring Default / Highlights */
+    body.spring {
+      --sky-top: #e8f0f8;
+      --sky-mid: #f0e8f5;
+      --sky-bottom: #f8f4f0;
+      --hill1: #c8e0d0;
+      --hill2: #b5d4c4;
+      --hill3: #a3c8b5;
+      --theme-active-bg: #d8f3e5;
+      --theme-active-border: #71c693;
+      --theme-accent: #2e7d32;
+    }
+
+    /* Autumn theme */
+    body.autumn {
+      --sky-top: #f7ebe0;
+      --sky-mid: #f0dcc8;
+      --sky-bottom: #e8c9a8;
+      --hill1: #d4c4a8;
+      --hill2: #c4b090;
+      --hill3: #b39b78;
+      --theme-active-bg: #fde8d0;
+      --theme-active-border: #e07b39;
+      --theme-accent: #d35400;
+    }
+
+    body.wind-on .cloud {
+      animation-duration: 8s !important;
+    }
+    body.wind-on .tree-img {
+      animation: tree-sway 2.8s ease-in-out infinite;
+    }
+    @keyframes tree-sway {
+      0%, 100% { transform: translateX(-50%) rotate(-1.2deg); }
+      50%      { transform: translateX(-50%) rotate(1.2deg); }
+    }
+
+    .scenery {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 100px;
+      filter: blur(1px);
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .cloud-1 {
+      width: 180px; height: 50px;
+      top: 8%; left: 8%;
+      animation: drift 45s linear infinite;
+    }
+    .cloud-1::before { width: 70px; height: 70px; top: -35px; left: 25px; }
+    .cloud-1::after  { width: 55px; height: 55px; top: -25px; left: 90px; }
+
+    .cloud-2 {
+      width: 140px; height: 40px;
+      top: 14%; right: 12%;
+      animation: drift 55s linear infinite reverse;
+    }
+    .cloud-2::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+    .cloud-2::after  { width: 45px; height: 45px; top: -20px; left: 70px; }
+
+    .cloud-3 {
+      width: 120px; height: 35px;
+      top: 22%; left: 35%;
+      opacity: 0.7;
+      animation: drift 60s linear infinite;
+    }
+    .cloud-3::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+    .cloud-3::after  { width: 40px; height: 40px; top: -18px; left: 60px; }
+
+    @keyframes drift {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(30px); }
+    }
+
+    .sun {
+      position: absolute;
+      top: 6%; right: 12%;
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffe8c8, #f5c98a 60%, #e8b06a);
+      box-shadow: 0 0 40px 15px rgba(255, 220, 160, 0.35);
+      animation: sun-glow 6s ease-in-out infinite;
+      transition: background 0.8s ease, box-shadow 0.8s ease;
+    }
+    body.autumn .sun {
+      background: radial-gradient(circle at 35% 35%, #ffe0b0, #f0a060 60%, #e07830);
+      box-shadow: 0 0 40px 15px rgba(255, 180, 100, 0.4);
+    }
+    @keyframes sun-glow {
+      0%, 100% { box-shadow: 0 0 40px 15px rgba(255, 220, 160, 0.35); }
+      50%      { box-shadow: 0 0 55px 22px rgba(255, 220, 160, 0.45); }
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(168, 213, 186, 0.5);
+      animation: float-up linear infinite;
+      transition: background 0.6s ease;
+    }
+    body.autumn .particle {
+      background: rgba(230, 150, 80, 0.45);
+    }
+    @keyframes float-up {
+      0%   { transform: translateY(100vh) scale(0.5); opacity: 0; }
+      15%  { opacity: 0.6; }
+      85%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    /* Flying leaves — Green & Pink Mix in Spring */
+    .fly-leaf {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #8fc9a8;
+      border-radius: 0 70% 0 70%;
+      opacity: 0.65;
+      pointer-events: none;
+      animation: leaf-fly linear infinite;
+      z-index: 5;
+      transition: background 0.5s ease;
+    }
+    /* Spring variation: alternating green and soft pink leaves */
+    .fly-leaf:nth-child(2n) {
+      background: #a8d5ba;
+      border-radius: 70% 0 70% 0;
+    }
+    .fly-leaf:nth-child(3n) {
+      background: #f4acb7; /* Pink petal */
+    }
+    .fly-leaf:nth-child(5n) {
+      background: #ffcad4; /* Soft blossom pink */
+    }
+
+    /* Autumn override */
+    body.autumn .fly-leaf { background: #e07b39; }
+    body.autumn .fly-leaf:nth-child(2n) { background: #d35400; }
+    body.autumn .fly-leaf:nth-child(3n) { background: #f39c12; }
+    body.autumn .fly-leaf:nth-child(5n) { background: #c0392b; }
+
+    @keyframes leaf-fly {
+      0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.4; }
+      100% { transform: translate(var(--tx), 110vh) rotate(var(--rot)); opacity: 0; }
+    }
+
+    /* Control buttons styling */
+    .control-btn {
+      position: fixed;
+      right: 18px;
+      z-index: 50;
+      background: rgba(255,255,255,0.85);
+      border: 1.5px solid rgba(180, 200, 180, 0.6);
+      border-radius: 50px;
+      padding: 10px 18px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(6px);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .season-btn {
+      top: 18px;
+      border-color: var(--theme-active-border);
+      background: var(--theme-active-bg);
+      color: var(--theme-accent);
+    }
+    .wind-btn {
+      top: 70px;
+    }
+    .control-btn:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.95);
+    }
+    .wind-btn.active {
+      background: var(--theme-active-bg);
+      border-color: var(--theme-active-border);
+    }
+
+    /* Main Container Structure */
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 36px 16px 0;
+      width: 100%;
+      max-width: 560px;
+      min-height: 100vh;
+    }
+
+    header { text-align: center; margin-bottom: 8px; }
+
+    .avatar {
+      width: 86px; height: 86px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: var(--soft-shadow);
+      background: linear-gradient(145deg, #d4efe8, #e2d4f0);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.1rem;
+      margin: 0 auto 12px;
+      animation: soft-pulse 4.5s ease-in-out infinite;
+      transition: background 0.6s ease;
+    }
+    body.autumn .avatar {
+      background: linear-gradient(145deg, #f5d9b8, #e8c4a0);
+    }
+    @keyframes soft-pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.045); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+      font-size: 1.9rem;
+      color: #3d3229;
+      margin-bottom: 5px;
+      letter-spacing: 0.4px;
+    }
+
+    .bio {
+      font-size: 0.92rem;
+      opacity: 0.72;
+      line-height: 1.5;
+      max-width: 260px;
+    }
+
+    /* Fixed Ground Scene — Removes bottom white space completely */
+    .ground-wrapper {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 160px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hills {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--hill3); /* Fallback solid color for screen bottom */
+    }
+    .hill {
+      position: absolute;
+      bottom: 0;
+      border-radius: 50% 50% 0 0;
+      transition: background 0.8s ease;
+    }
+    .hill-1 {
+      width: 140%; height: 260px;
+      left: -20%;
+      background: var(--hill1);
+      opacity: 0.85;
+    }
+    .hill-2 {
+      width: 110%; height: 210px;
+      left: -5%;
+      background: var(--hill2);
+      opacity: 0.9;
+    }
+    .hill-3 {
+      width: 130%; height: 160px;
+      left: -15%;
+      background: var(--hill3);
+    }
+
+    /* Tree Scene */
+    .tree-scene {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      height: 480px;
+      margin-top: auto;
+      margin-bottom: 20px;
+      z-index: 2;
+    }
+
+    .tree-img {
+      position: absolute;
+      left: 50%;
+      bottom: 70px;
+      transform: translateX(-50%);
+      width: 650px;
+      max-width: none;
+      height: auto;
+      filter: drop-shadow(0 12px 18px rgba(90, 70, 50, 0.15)) sepia(0.15) hue-rotate(70deg) saturate(1.4);
+      transition: filter 0.7s ease;
+      pointer-events: none;
+    }
+    body.autumn .tree-img {
+      filter: drop-shadow(0 12px 18px rgba(90, 70, 50, 0.18));
+    }
+
+    .hanging-links {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .link-item {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: auto;
+      transform-origin: top center;
+      transition: top 1.45s cubic-bezier(0.4, 0.0, 0.7, 0.15),
+                  left 1.45s cubic-bezier(0.35, 0.1, 0.55, 1);
+    }
+
+    .string {
+      width: 1.6px;
+      background: linear-gradient(to bottom, transparent 0%, #c4b09a 12%, #c4b09a 100%);
+      border-radius: 2px;
+      opacity: 0.75;
+      transition: opacity 0.5s, height 0.5s;
+    }
+
+    .tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.94);
+      box-shadow: var(--soft-shadow);
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.86rem;
+      transition: all 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+      border: 1.5px solid rgba(255,255,255,0.85);
+      white-space: nowrap;
+      backdrop-filter: blur(3px);
+      cursor: pointer;
+    }
+    .tag:hover {
+      transform: translateY(-6px) scale(1.06);
+      box-shadow: 0 14px 32px rgba(100, 80, 60, 0.2);
+    }
+    .tag .icon {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.74rem;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+    .tag .label {
+      transition: opacity 0.35s, width 0.35s, margin 0.35s;
+    }
+
+    .tag.github    { background: linear-gradient(135deg, #f2f5f8, #e6edf4); }
+    .tag.linkedin  { background: linear-gradient(135deg, #e9f4fc, #d9eef9); }
+    .tag.linktree  { background: linear-gradient(135deg, #e8f7ef, #d5f0e2); }
+    .tag.codedex   { background: linear-gradient(135deg, #f3e9fc, #e8dcf7); }
+    .tag.youtube   { background: linear-gradient(135deg, #fde9e9, #fadcdc); }
+    .tag.portfolio { background: linear-gradient(135deg, #fdf1e4, #fae7d0); }
+    .tag.email     { background: linear-gradient(135deg, #e9f1f9, #dce7f3); }
+
+    .sway-1 { animation: sway 5.3s ease-in-out infinite; }
+    .sway-2 { animation: sway 6.1s ease-in-out infinite 0.4s; }
+    .sway-3 { animation: sway 4.8s ease-in-out infinite 0.85s; }
+    .sway-4 { animation: sway 5.7s ease-in-out infinite 0.2s; }
+    .sway-5 { animation: sway 6.4s ease-in-out infinite 1.05s; }
+    .sway-6 { animation: sway 5.0s ease-in-out infinite 0.55s; }
+    .sway-7 { animation: sway 5.8s ease-in-out infinite 0.3s; }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-3.6deg); }
+      50%      { transform: rotate(3.6deg); }
+    }
+
+    body.wind-on .sway-1,
+    body.wind-on .sway-2,
+    body.wind-on .sway-3,
+    body.wind-on .sway-4,
+    body.wind-on .sway-5,
+    body.wind-on .sway-6,
+    body.wind-on .sway-7 {
+      animation-duration: 1.8s !important;
+    }
+
+    /* Hanging positions */
+.item-1 { top: -90px; left: 4%; }
+.item-2 { top: -105px; left: 60%; }
+.item-3 { top: -40px; left: -2%; }
+.item-4 { top: -50px; left: 66%; }
+.item-5 { top: 20px; left: 8%; }
+.item-6 { top: 10px; left: 58%; }
+.item-7 { top: 85px; left: 34%; }
+
+    .item-1 .string { height: 46px; }
+    .item-2 .string { height: 40px; }
+    .item-3 .string { height: 50px; }
+    .item-4 .string { height: 44px; }
+    .item-5 .string { height: 48px; }
+    .item-6 .string { height: 46px; }
+    .item-7 .string { height: 38px; }
+
+    /* Individual click fall */
+    .link-item.falling {
+      animation: none !important;
+      z-index: 30;
+    }
+    .link-item.falling .tag {
+      animation: fruit-fall 0.9s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+      pointer-events: none;
+    }
+    @keyframes fruit-fall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      40%  { transform: translateY(50px) rotate(14deg) scale(1.05); opacity: 1; }
+      100% { transform: translateY(240px) rotate(30deg) scale(0.7); opacity: 0; }
+    }
+
+    /* Portal */
+    .portal {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      background: radial-gradient(circle,
+        rgba(255,255,255,0.95) 0%,
+        rgba(180, 230, 200, 0.7) 40%,
+        rgba(160, 210, 190, 0.3) 70%,
+        transparent 100%);
+      box-shadow: 0 0 80px 40px rgba(170, 220, 190, 0.35);
+    }
+    .portal.active {
+      animation: portal-expand 0.95s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
+    }
+    @keyframes portal-expand {
+      0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.95; }
+      55%  { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+    }
+
+    /* Harvest mode */
+    body.wind-on .link-item .string {
+      opacity: 0;
+      height: 0;
+    }
+    body.wind-on .tag .label {
+      opacity: 0;
+      width: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    body.wind-on .tag {
+      padding: 10px;
+      border-radius: 50%;
+      gap: 0;
+    }
+    body.wind-on .link-item {
+      animation: none !important;
+      transform-origin: center center;
+    }
+
+    body.wind-on .link-item.rolling {
+      animation: ground-roll 2.6s ease-in-out infinite alternate !important;
+    }
+    @keyframes ground-roll {
+      0%   { transform: rotate(-13deg) translateX(-5px); }
+      100% { transform: rotate(13deg) translateX(5px); }
+    }
+
+    /* Seamless Footer sitting inside the green land */
+    footer {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem;
+      color: rgba(74, 63, 53, 0.75);
+      letter-spacing: 0.3px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .tree-scene { height: 400px; }
+      .tree-img { width: 320px; }
+      .tag { padding: 9px 13px; font-size: 0.82rem; gap: 6px; }
+      .item-1 { left: -2%; }
+      .item-2 { left: 56%; }
+      .item-3 { left: -6%; }
+      .item-4 { left: 60%; }
+      .item-5 { left: 2%; }
+      .item-6 { left: 52%; }
+      .item-7 { left: 28%; }
+      .sun { width: 52px; height: 52px; }
+      .control-btn { right: 12px; padding: 8px 14px; font-size: 0.8rem; }
+      .season-btn { top: 12px; }
+      .wind-btn { top: 58px; }
+    }
+  </style>
+</head>
+<body class="spring">
+
+  <!-- Season Control Button with dynamic state and icon -->
+  <button class="control-btn season-btn" id="seasonBtn">
+    <span id="seasonIcon">🌸</span>
+    <span id="seasonLabel">Spring</span>
+  </button>
+
+  <button class="control-btn wind-btn" id="windBtn">
+    <span>🍃</span>
+    <span id="windLabel">Harvest</span>
+  </button>
+
+  <div class="scenery">
+    <div class="sun"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div id="particles" class="scenery"></div>
+  <div id="leaves" class="scenery"></div>
+
+  <!-- Ground hills locked to screen bottom -->
+  <div class="ground-wrapper">
+    <div class="hills">
+      <div class="hill hill-1"></div>
+      <div class="hill hill-2"></div>
+      <div class="hill hill-3"></div>
+    </div>
+  </div>
+
+  <div class="portal" id="portal"></div>
+
+  <div class="content">
+    <header>
+      <div class="avatar">🌿</div>
+      <h1>Saipriyank Gadepalli</h1>
+      <p class="bio">just a person on the internet.<br>i make stuff sometimes.</p>
+    </header>
+
+    <div class="tree-scene">
+      <img class="tree-img" src="/Users/priyank/Downloads/tree Background Removed.png" alt="Tree" />
+
+      <div class="hanging-links">
+        <div class="link-item item-1 sway-1">
+          <div class="string"></div>
+          <a class="tag github" href="https://github.com" data-url="https://github.com">
+            <span class="icon" style="background:#24292e;color:#fff;">⌘</span>
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="link-item item-2 sway-2">
+          <div class="string"></div>
+          <a class="tag linkedin" href="https://linkedin.com" data-url="https://linkedin.com">
+            <span class="icon" style="background:#0a66c2;color:#fff;">in</span>
+            <span class="label">LinkedIn</span>
+          </a>
+        </div>
+
+        <div class="link-item item-3 sway-3">
+          <div class="string"></div>
+          <a class="tag linktree" href="https://linktr.ee" data-url="https://linktr.ee">
+            <span class="icon" style="background:#43e55e;color:#fff;">🍃</span>
+            <span class="label">Linktree</span>
+          </a>
+        </div>
+
+        <div class="link-item item-4 sway-4">
+          <div class="string"></div>
+          <a class="tag codedex" href="https://www.codedex.io" data-url="https://www.codedex.io">
+            <span class="icon" style="background:#7c5cfc;color:#fff;">✦</span>
+            <span class="label">Codédex</span>
+          </a>
+        </div>
+
+        <div class="link-item item-5 sway-5">
+          <div class="string"></div>
+          <a class="tag youtube" href="#" data-url="#">
+            <span class="icon" style="background:#ff0000;color:#fff;">▶</span>
+            <span class="label">YouTube</span>
+          </a>
+        </div>
+
+        <div class="link-item item-6 sway-6">
+          <div class="string"></div>
+          <a class="tag portfolio" href="#" data-url="#">
+            <span class="icon" style="background:#e8a87c;color:#fff;">◈</span>
+            <span class="label">Portfolio</span>
+          </a>
+        </div>
+
+        <div class="link-item item-7 sway-7">
+          <div class="string"></div>
+          <a class="tag email" href="mailto:hello@example.com" data-url="mailto:hello@example.com">
+            <span class="icon" style="background:#5b8def;color:#fff;">✉</span>
+            <span class="label">Email Me</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Made with 🌿 by Saipriyank Gadepalli</footer>
+
+  <script>
+    // particles
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 16; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (10 + Math.random() * 9) + 's';
+      p.style.animationDelay = (Math.random() * 12) + 's';
+      const size = 3 + Math.random() * 5;
+      p.style.width = p.style.height = size + 'px';
+      container.appendChild(p);
+    }
+
+    // flying leaves (18 total - mixed colors)
+    const leafBox = document.getElementById('leaves');
+    for (let i = 0; i < 18; i++) {
+      const leaf = document.createElement('div');
+      leaf.className = 'fly-leaf';
+      leaf.style.left = Math.random() * 100 + '%';
+      leaf.style.top = -20 - Math.random() * 60 + 'px';
+      leaf.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+      leaf.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+      leaf.style.animationDuration = (9 + Math.random() * 10) + 's';
+      leaf.style.animationDelay = (Math.random() * 12) + 's';
+      leaf.style.opacity = 0.4 + Math.random() * 0.35;
+      const size = 9 + Math.random() * 7;
+      leaf.style.width = leaf.style.height = size + 'px';
+      leafBox.appendChild(leaf);
+    }
+
+    // portal + individual click fall
+    const portal = document.getElementById('portal');
+    let busy = false;
+
+    document.querySelectorAll('.tag').forEach(tag => {
+      tag.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (busy) return;
+        busy = true;
+
+        const item = this.closest('.link-item');
+        const url = this.getAttribute('data-url') || this.href;
+
+        if (document.body.classList.contains('wind-on')) {
+          const r = this.getBoundingClientRect();
+          portal.style.left = (r.left + r.width / 2) + 'px';
+          portal.style.top = (r.top + r.height / 2) + 'px';
+          portal.style.width = '28px';
+          portal.style.height = '28px';
+          portal.classList.add('active');
+
+          setTimeout(() => {
+            if (url && url !== '#') window.location.href = url;
+            else {
+              portal.classList.remove('active');
+              busy = false;
+            }
+          }, 700);
+          return;
+        }
+
+        item.classList.add('falling');
+
+        setTimeout(() => {
+          const r = this.getBoundingClientRect();
+          portal.style.left = (r.left + r.width / 2) + 'px';
+          portal.style.top = (r.top + r.height / 2 + 80) + 'px';
+          portal.style.width = '36px';
+          portal.style.height = '36px';
+          portal.classList.add('active');
+
+          setTimeout(() => {
+            if (url && url !== '#') {
+              window.location.href = url;
+            } else {
+              portal.classList.remove('active');
+              item.classList.remove('falling');
+              busy = false;
+            }
+          }, 750);
+        }, 800);
+      });
+    });
+
+    // Harvest – natural gravity fall + non-overlapping landing + roll
+    const windBtn = document.getElementById('windBtn');
+    const windLabel = document.getElementById('windLabel');
+    let windActive = false;
+
+    windBtn.addEventListener('click', () => {
+      windActive = !windActive;
+      document.body.classList.toggle('wind-on', windActive);
+      windBtn.classList.toggle('active', windActive);
+      windLabel.textContent = windActive ? 'Restore' : 'Harvest';
+
+      const items = document.querySelectorAll('.link-item');
+
+      if (windActive) {
+        const placed = [];
+
+        items.forEach((item, index) => {
+          setTimeout(() => {
+            let left, top, attempts = 0;
+            const minDist = 11;
+
+            do {
+              left = 6 + Math.random() * 82;
+              top  = 380 + Math.random() * 30;
+              attempts++;
+            } while (
+              attempts < 25 &&
+              placed.some(p => {
+                const dx = Math.abs(p.left - left);
+                const dy = Math.abs(p.top - top) / 8;
+                return Math.hypot(dx, dy) < minDist;
+              })
+            );
+
+            placed.push({ left, top });
+
+            item.style.top  = top + 'px';
+            item.style.left = left + '%';
+
+            setTimeout(() => {
+              item.classList.add('rolling');
+            }, 1500);
+          }, index * 90 + Math.random() * 40);
+        });
+      } else {
+        items.forEach(item => {
+          item.classList.remove('rolling');
+          item.style.top  = '';
+          item.style.left = '';
+        });
+      }
+    });
+
+    // Spring / Autumn theme toggle
+    const seasonBtn = document.getElementById('seasonBtn');
+    const seasonLabel = document.getElementById('seasonLabel');
+    const seasonIcon = document.getElementById('seasonIcon');
+    let currentSeason = 'spring';
+
+    seasonBtn.addEventListener('click', () => {
+      if (currentSeason === 'spring') {
+        currentSeason = 'autumn';
+        document.body.classList.remove('spring');
+        document.body.classList.add('autumn');
+        seasonLabel.textContent = 'Autumn';
+        seasonIcon.textContent = '🍂';
+      } else {
+        currentSeason = 'spring';
+        document.body.classList.remove('autumn');
+        document.body.classList.add('spring');
+        seasonLabel.textContent = 'Spring';
+        seasonIcon.textContent = '🌸';
+      }
+    });
+  </script>
+</body>
+</html>
+
