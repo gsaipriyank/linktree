@@ -443,14 +443,15 @@
       border-radius: 50%;
       border: 3px solid rgba(255,255,255,0.9);
       box-shadow: var(--soft-shadow);
-      background: linear-gradient(145deg, #d4efe8, #e2d4f0);
+      background-image: url('https://firebasestorage.googleapis.com/v0/b/codedex-io.appspot.com/o/avatars%2FV5pPMkEm31Tpc2LcZ27hqw2DVP53%2Fprofile.jpg?alt=media&token=a2b519b2-5009-40e7-9b6c-8c72f8c97e64');
+      background-size: cover;
+      background-position: center;
       display: flex; align-items: center; justify-content: center;
       font-size: 2rem;
       margin: 0 auto 10px;
       animation: soft-pulse 4.5s ease-in-out infinite;
     }
     body.night .avatar {
-      background: linear-gradient(145deg, #1e293b, #334155);
       border-color: rgba(255,255,255,0.2);
     }
     @keyframes soft-pulse {
@@ -791,7 +792,7 @@
     <div class="main-stage">
       
       <header>
-        <div class="avatar">🌿</div>
+        <div class="avatar"></div>
         <h1>Saipriyank Gadepalli</h1>
         <p class="bio">just a person on the internet.<br>i make stuff sometimes.</p>
       </header>
@@ -802,7 +803,7 @@
         <div class="hanging-links">
           <div class="link-item item-1 sway-1">
             <div class="string"></div>
-            <a class="tag github" href="https://github.com/gsaipriyank" data-url="ttps://github.com/gsaipriyank">
+            <a class="tag github" href="https://github.com/gsaipriyank" data-url="https://github.com/gsaipriyank">
               <span class="icon" style="background:#24292e;color:#fff;">⌘</span>
               <span class="label">GitHub</span>
             </a>
