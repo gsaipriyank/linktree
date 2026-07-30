@@ -803,7 +803,7 @@
         <div class="hanging-links">
           <div class="link-item item-1 sway-1">
             <div class="string"></div>
-            <a class="tag github" href="https://github.com/gsaipriyank" data-url="https://github.com/gsaipriyank">
+            <a class="tag github" href="https://github.com/gsaipriyank" data-url="https://github.com/gsaipriyank" target="_blank">
               <span class="icon" style="background:#24292e;color:#fff;">⌘</span>
               <span class="label">GitHub</span>
             </a>
@@ -827,7 +827,7 @@
 
           <div class="link-item item-4 sway-4">
             <div class="string"></div>
-            <a class="tag codedex" href="https://www.codedex.io/@Saipriyank" data-url="https://www.codedex.io/@Saipriyank target="_blank">
+            <a class="tag codedex" href="https://www.codedex.io/@Saipriyank" data-url="https://www.codedex.io/@Saipriyank" target="_blank">
               <span class="icon" style="background:#ffd000;color:#333;">💻</span>
               <span class="label">Codédex</span>
             </a>
@@ -843,7 +843,7 @@
 
           <div class="link-item item-6 sway-6">
             <div class="string"></div>
-            <a class="tag portfolio" href="https://www.codedex.io/@Saipriyank/build/personal-portfolio" data-url="https://www.codedex.io/@Saipriyank/build/personal-portfolio" target="_blank">
+            <a class="tag portfolio" href="https://4evo2tj5a4yu2icndout.codedex.me/" data-url="https://4evo2tj5a4yu2icndout.codedex.me/" target="_blank">
               <span class="icon" style="background:#e8a87c;color:#fff;">◈</span>
               <span class="label">Portfolio</span>
             </a>
@@ -851,7 +851,7 @@
 
           <div class="link-item item-7 sway-7">
             <div class="string"></div>
-            <a class="tag email" href="mailto:saipriyank123@gmail.com" data-url="mailto:hello@example.com">
+            <a class="tag email" href="mailto:saipriyank123@gmail.com" data-url="mailto:saipriyank123@gmail.com">
               <span class="icon" style="background:#5b8def;color:#fff;">✉</span>
               <span class="label">Email Me</span>
             </a>
@@ -872,6 +872,12 @@
   </div>
 
   <script>
+    /* Reset state on page load / back-button navigation */
+    window.addEventListener('pageshow', () => {
+      busy = false;
+      portal.classList.remove('active');
+    });
+
     /* Top-Left Eye Hide/Unhide Toggle */
     const eyeToggleBtn = document.getElementById('eyeToggleBtn');
     const controlsContainer = document.getElementById('controlsContainer');
@@ -961,6 +967,7 @@
 
         const item = this.closest('.link-item');
         const url = this.getAttribute('data-url') || this.href;
+        const target = this.getAttribute('target');
 
         if (document.body.classList.contains('wind-on')) {
           const r = this.getBoundingClientRect();
@@ -971,11 +978,15 @@
           portal.classList.add('active');
 
           setTimeout(() => {
-            if (url && url !== '#') window.location.href = url;
-            else {
-              portal.classList.remove('active');
-              busy = false;
+            if (url && url !== '#') {
+              if (target === '_blank') {
+                window.open(url, '_blank');
+              } else {
+                window.location.href = url;
+              }
             }
+            portal.classList.remove('active');
+            busy = false;
           }, 700);
           return;
         }
@@ -992,12 +1003,15 @@
 
           setTimeout(() => {
             if (url && url !== '#') {
-              window.location.href = url;
-            } else {
-              portal.classList.remove('active');
-              item.classList.remove('falling');
-              busy = false;
+              if (target === '_blank') {
+                window.open(url, '_blank');
+              } else {
+                window.location.href = url;
+              }
             }
+            portal.classList.remove('active');
+            item.classList.remove('falling');
+            busy = false;
           }, 750);
         }, 850);
       });
