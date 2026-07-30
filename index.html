@@ -34,7 +34,6 @@
     }
 
     body {
-      zoom: 1.0;
       transform-origin: top center;
     }
 
@@ -415,6 +414,8 @@
       align-items: center;
       position: relative;
       z-index: 2;
+      transform-origin: center center;
+      transition: transform 0.2s ease;
     }
 
     .main-stage {
@@ -786,7 +787,7 @@
   <div id="leaves" class="scenery"></div>
   <div class="portal" id="portal"></div>
 
-  <div class="page-viewport">
+  <div class="page-viewport" id="pageViewport">
     <div class="main-stage">
       
       <header>
@@ -801,7 +802,7 @@
         <div class="hanging-links">
           <div class="link-item item-1 sway-1">
             <div class="string"></div>
-            <a class="tag github" href="https://github.com/gsaipriyank" data-url="https://github.com">
+            <a class="tag github" href="https://github.com/gsaipriyank" data-url="ttps://github.com/gsaipriyank">
               <span class="icon" style="background:#24292e;color:#fff;">⌘</span>
               <span class="label">GitHub</span>
             </a>
@@ -809,7 +810,7 @@
 
           <div class="link-item item-2 sway-2">
             <div class="string"></div>
-            <a class="tag linkedin" href="https://www.linkedin.com/in/saipriyank/" data-url="https://linkedin.com">
+            <a class="tag linkedin" href="https://www.linkedin.com/in/saipriyank/" data-url="https://www.linkedin.com/in/saipriyank/" target="_blank">
               <span class="icon" style="background:#0a66c2;color:#fff;">in</span>
               <span class="label">LinkedIn</span>
             </a>
@@ -817,7 +818,7 @@
 
           <div class="link-item item-3 sway-3">
             <div class="string"></div>
-            <a class="tag linktree" href="https://linktr.ee" data-url="https://linktr.ee">
+            <a class="tag linktree" href="https://linktr.ee/saipriyank" data-url="https://linktr.ee/saipriyank" target="_blank">
               <span class="icon" style="background:#43e55e;color:#fff;">🍃</span>
               <span class="label">Linktree</span>
             </a>
@@ -825,7 +826,7 @@
 
           <div class="link-item item-4 sway-4">
             <div class="string"></div>
-            <a class="tag codedex" href="https://www.codedex.io/@Saipriyank" data-url="https://www.codedex.io/home" target="_blank" rel="noopener">
+            <a class="tag codedex" href="https://www.codedex.io/@Saipriyank" data-url="https://www.codedex.io/@Saipriyank target="_blank">
               <span class="icon" style="background:#ffd000;color:#333;">💻</span>
               <span class="label">Codédex</span>
             </a>
@@ -833,7 +834,7 @@
 
           <div class="link-item item-5 sway-5">
             <div class="string"></div>
-            <a class="tag youtube" href="https://www.youtube.com/@saipriyank" data-url="#">
+            <a class="tag youtube" href="https://www.youtube.com/@saipriyank" data-url="https://www.youtube.com/@saipriyank" target="_blank">
               <span class="icon" style="background:#ff0000;color:#fff;">▶</span>
               <span class="label">YouTube</span>
             </a>
@@ -841,7 +842,7 @@
 
           <div class="link-item item-6 sway-6">
             <div class="string"></div>
-            <a class="tag portfolio" href="https://www.codedex.io/@Saipriyank/build/personal-portfolio" data-url="#">
+            <a class="tag portfolio" href="https://www.codedex.io/@Saipriyank/build/personal-portfolio" data-url="https://www.codedex.io/@Saipriyank/build/personal-portfolio" target="_blank">
               <span class="icon" style="background:#e8a87c;color:#fff;">◈</span>
               <span class="label">Portfolio</span>
             </a>
@@ -883,9 +884,14 @@
 
     /* Zoom Level Controls */
     let currentZoom = 0.8;
+    const pageViewport = document.getElementById('pageViewport');
+
     function updateZoom() {
-      document.body.style.zoom = currentZoom;
+      pageViewport.style.transform = `scale(${currentZoom})`;
     }
+
+    // Initialize initial zoom scale
+    updateZoom();
 
     document.getElementById('zoomInBtn').addEventListener('click', () => {
       currentZoom = Math.min(currentZoom + 0.1, 1.5);
