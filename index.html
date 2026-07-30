@@ -33,6 +33,11 @@
       transition: background 0.8s ease, color 0.8s ease;
     }
 
+    body {
+      zoom: 1.0;
+      transform-origin: top center;
+    }
+
     /* Spring / Autumn / Night Themes */
     body.spring {
       --sky-top: #e8f0f8;
@@ -208,7 +213,44 @@
       100% { transform: translate(var(--tx), 110vh) rotate(var(--rot)); opacity: 0; }
     }
 
-    /* Control Buttons & Weather Expansion */
+    /* Top-Left Eye Hide/Unhide Button */
+    .top-left-controls {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 60;
+    }
+
+    .eye-toggle-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid rgba(180, 200, 180, 0.6);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(6px);
+      font-size: 1.2rem;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    body.night .eye-toggle-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: var(--text);
+    }
+    .eye-toggle-btn:hover {
+      transform: scale(1.08);
+      background: rgba(255, 255, 255, 0.98);
+    }
+    body.night .eye-toggle-btn:hover {
+      background: rgba(30, 41, 59, 0.98);
+    }
+
+    /* Top-Right Control Buttons Container */
     .controls-container {
       position: fixed;
       top: 18px;
@@ -218,6 +260,15 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Hide class triggered by Eye Button */
+    .controls-hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translateY(-10px);
     }
 
     .control-btn {
@@ -245,6 +296,48 @@
     .control-btn:hover { transform: scale(1.05); background: rgba(255,255,255,0.95); }
     body.night .control-btn:hover { background: rgba(30, 41, 59, 0.95); }
     .wind-btn.active { background: var(--theme-active-bg); border-color: var(--theme-active-border); }
+
+    /* Horizontal Side-by-Side Zoom Group */
+    .zoom-group-horizontal {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+    }
+
+    .zoom-btn-minimal {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid rgba(180, 200, 180, 0.6);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    body.night .zoom-btn-minimal {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: var(--text);
+    }
+    .zoom-btn-minimal:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.98);
+    }
+    body.night .zoom-btn-minimal:hover {
+      background: rgba(30, 41, 59, 0.98);
+    }
+    .zoom-btn-minimal svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+    }
 
     /* Expandable Weather Control Button */
     .weather-menu-wrapper {
@@ -465,7 +558,6 @@
       transition: top 0.9s cubic-bezier(0.34, 1.25, 0.64, 1), left 0.9s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    /* 1. Stationary Hanging String */
     .string {
       width: 1.6px;
       background: linear-gradient(to bottom, transparent 0%, #c4b09a 12%, #c4b09a 100%);
@@ -475,7 +567,6 @@
       transition: opacity 0.3s ease;
     }
 
-    /* 2. Symmetric Center-Anchored Expanding Pill */
     .tag {
       position: absolute;
       top: 100%;
@@ -511,7 +602,7 @@
       display: flex; 
       align-items: center; 
       justify-content: center;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       flex-shrink: 0;
       font-weight: 600;
     }
@@ -525,7 +616,6 @@
       transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
     }
 
-    /* Icon-only collapsed state */
     .tag.collapsed, body.tags-collapsed .tag {
       padding: 5px;
       gap: 0;
@@ -541,7 +631,7 @@
     .tag.github    { background: linear-gradient(135deg, #f2f5f8, #e6edf4); }
     .tag.linkedin  { background: linear-gradient(135deg, #e9f4fc, #d9eef9); }
     .tag.linktree  { background: linear-gradient(135deg, #e8f7ef, #d5f0e2); }
-    .tag.codedex   { background: linear-gradient(135deg, #f3e9fc, #e8dcf7); }
+    .tag.codedex   { background: linear-gradient(135deg, #fffde6, #fffab3); }
     .tag.youtube   { background: linear-gradient(135deg, #fde9e9, #fadcdc); }
     .tag.portfolio { background: linear-gradient(135deg, #fdf1e4, #fae7d0); }
     .tag.email     { background: linear-gradient(135deg, #e9f1f9, #dce7f3); }
@@ -576,7 +666,7 @@
     .item-6 .string { height: 30px; }
     .item-7 .string { height: 24px; }
 
-    /* Natural Falling Physics & Acceleration */
+    /* Natural Falling Physics */
     .link-item.falling { animation: none !important; z-index: 30; }
     .link-item.falling .string { opacity: 0; transition: opacity 0.15s ease; }
     .link-item.falling .tag {
@@ -606,7 +696,7 @@
       100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
     }
 
-    /* Fixed Harvest Physics */
+    /* Harvest Physics */
     body.wind-on .link-item .string { opacity: 0; }
     body.wind-on .tag { padding: 5px; gap: 0; }
     body.wind-on .tag .label { max-width: 0; opacity: 0; margin: 0; overflow: hidden; }
@@ -640,7 +730,15 @@
 </head>
 <body class="spring">
 
-  <div class="controls-container">
+  <!-- Top-Left Eye Button (Always visible) -->
+  <div class="top-left-controls">
+    <button class="eye-toggle-btn" id="eyeToggleBtn" title="Hide/Unhide Controls" aria-label="Toggle Controls Visibility">
+      👁️
+    </button>
+  </div>
+
+  <!-- Top-Right Control Buttons & Zoom Controls -->
+  <div class="controls-container" id="controlsContainer">
     <div class="weather-menu-wrapper" id="weatherMenu">
       <button class="control-btn weather-expand-btn" id="weatherToggleBtn">
         <span id="seasonIcon">🌸</span>
@@ -663,6 +761,16 @@
       <span>🍎</span>
       <span id="collapseLabel">Collapse</span>
     </button>
+
+    <!-- Minimal Side-by-Side Zoom Controls -->
+    <div class="zoom-group-horizontal">
+      <button class="zoom-btn-minimal" id="zoomInBtn" title="Zoom In" aria-label="Zoom In">
+        <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+      <button class="zoom-btn-minimal" id="zoomOutBtn" title="Zoom Out" aria-label="Zoom Out">
+        <svg viewBox="0 0 24 24" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+    </div>
   </div>
 
   <div class="scenery">
@@ -716,8 +824,8 @@
 
           <div class="link-item item-4 sway-4">
             <div class="string"></div>
-            <a class="tag codedex" href="https://www.codedex.io" data-url="https://www.codedex.io">
-              <span class="icon" style="background:#7c5cfc;color:#fff;">✦</span>
+            <a class="tag codedex" href="https://www.codedex.io/home" data-url="https://www.codedex.io/home" target="_blank" rel="noopener">
+              <span class="icon" style="background:#ffd000;color:#333;">💻</span>
               <span class="label">Codédex</span>
             </a>
           </div>
@@ -761,6 +869,33 @@
   </div>
 
   <script>
+    /* Top-Left Eye Hide/Unhide Toggle */
+    const eyeToggleBtn = document.getElementById('eyeToggleBtn');
+    const controlsContainer = document.getElementById('controlsContainer');
+    let controlsVisible = true;
+
+    eyeToggleBtn.addEventListener('click', () => {
+      controlsVisible = !controlsVisible;
+      controlsContainer.classList.toggle('controls-hidden', !controlsVisible);
+      eyeToggleBtn.textContent = controlsVisible ? '👁️' : '🙈';
+    });
+
+    /* Zoom Level Controls */
+    let currentZoom = 0.8;
+    function updateZoom() {
+      document.body.style.zoom = currentZoom;
+    }
+
+    document.getElementById('zoomInBtn').addEventListener('click', () => {
+      currentZoom = Math.min(currentZoom + 0.1, 1.5);
+      updateZoom();
+    });
+
+    document.getElementById('zoomOutBtn').addEventListener('click', () => {
+      currentZoom = Math.max(currentZoom - 0.1, 0.4);
+      updateZoom();
+    });
+
     /* Background Particles */
     const container = document.getElementById('particles');
     for (let i = 0; i < 16; i++) {
