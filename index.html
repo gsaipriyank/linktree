@@ -23,26 +23,17 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html {
-      height: 100%;
-      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bottom) 100%);
-      overflow-x: hidden;
-    }
-
-    body {
+    html, body {
       width: 100%;
-      min-height: 100vh;
+      height: 100%;
+      overflow-x: hidden;
       font-family: 'Quicksand', sans-serif;
       color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      transition: background 0.8s ease;
       background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bottom) 100%);
+      transition: background 0.8s ease, color 0.8s ease;
     }
 
-    /* Spring Default / Highlights */
+    /* Spring / Autumn / Night Themes */
     body.spring {
       --sky-top: #e8f0f8;
       --sky-mid: #f0e8f5;
@@ -50,12 +41,12 @@
       --hill1: #c8e0d0;
       --hill2: #b5d4c4;
       --hill3: #a3c8b5;
+      --text: #4a3f35;
       --theme-active-bg: #d8f3e5;
       --theme-active-border: #71c693;
       --theme-accent: #2e7d32;
     }
 
-    /* Autumn theme */
     body.autumn {
       --sky-top: #f7ebe0;
       --sky-mid: #f0dcc8;
@@ -63,22 +54,26 @@
       --hill1: #d4c4a8;
       --hill2: #c4b090;
       --hill3: #b39b78;
+      --text: #4a3f35;
       --theme-active-bg: #fde8d0;
       --theme-active-border: #e07b39;
       --theme-accent: #d35400;
     }
 
-    body.wind-on .cloud {
-      animation-duration: 8s !important;
-    }
-    body.wind-on .tree-img {
-      animation: tree-sway 2.8s ease-in-out infinite;
-    }
-    @keyframes tree-sway {
-      0%, 100% { transform: translateX(-50%) rotate(-1.2deg); }
-      50%      { transform: translateX(-50%) rotate(1.2deg); }
+    body.night {
+      --sky-top: #0a0e1a;
+      --sky-mid: #121b2d;
+      --sky-bottom: #1a2636;
+      --hill1: #182836;
+      --hill2: #121e2a;
+      --hill3: #0c141d;
+      --text: #e2e8f0;
+      --theme-active-bg: #1e293b;
+      --theme-active-border: #6366f1;
+      --theme-accent: #818cf8;
     }
 
+    /* Fixed Scenery Background */
     .scenery {
       position: fixed;
       inset: 0;
@@ -92,7 +87,9 @@
       background: rgba(255, 255, 255, 0.55);
       border-radius: 100px;
       filter: blur(1px);
+      transition: opacity 0.8s ease;
     }
+    body.night .cloud { opacity: 0.15; }
     .cloud::before, .cloud::after {
       content: '';
       position: absolute;
@@ -137,15 +134,38 @@
       background: radial-gradient(circle at 35% 35%, #ffe8c8, #f5c98a 60%, #e8b06a);
       box-shadow: 0 0 40px 15px rgba(255, 220, 160, 0.35);
       animation: sun-glow 6s ease-in-out infinite;
-      transition: background 0.8s ease, box-shadow 0.8s ease;
+      transition: all 0.8s ease;
     }
     body.autumn .sun {
       background: radial-gradient(circle at 35% 35%, #ffe0b0, #f0a060 60%, #e07830);
       box-shadow: 0 0 40px 15px rgba(255, 180, 100, 0.4);
     }
+    body.night .sun {
+      background: radial-gradient(circle at 35% 35%, #ffffff, #cbd5e1 60%, #94a3b8);
+      box-shadow: 0 0 50px 20px rgba(226, 232, 240, 0.3);
+    }
     @keyframes sun-glow {
       0%, 100% { box-shadow: 0 0 40px 15px rgba(255, 220, 160, 0.35); }
       50%      { box-shadow: 0 0 55px 22px rgba(255, 220, 160, 0.45); }
+    }
+
+    /* Starry Night Stars */
+    .stars {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    body.night .stars { opacity: 1; }
+    .star {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 50%;
+      animation: twinkle linear infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
     }
 
     .particle {
@@ -153,10 +173,12 @@
       border-radius: 50%;
       background: rgba(168, 213, 186, 0.5);
       animation: float-up linear infinite;
-      transition: background 0.6s ease;
     }
     body.autumn .particle {
-      background: rgba(230, 150, 80, 0.45);
+      background: rgba(224, 160, 110, 0.45);
+    }
+    body.night .particle {
+      background: rgba(165, 180, 252, 0.4);
     }
     @keyframes float-up {
       0%   { transform: translateY(100vh) scale(0.5); opacity: 0; }
@@ -165,37 +187,20 @@
       100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
 
-    /* Flying leaves — Green & Pink Mix in Spring */
     .fly-leaf {
       position: absolute;
-      width: 12px;
-      height: 12px;
-      background: #8fc9a8;
+      width: 12px; height: 12px;
       border-radius: 0 70% 0 70%;
       opacity: 0.65;
       pointer-events: none;
       animation: leaf-fly linear infinite;
       z-index: 5;
-      transition: background 0.5s ease;
+      transition: background 0.8s ease;
     }
-    /* Spring variation: alternating green and soft pink leaves */
-    .fly-leaf:nth-child(2n) {
-      background: #a8d5ba;
-      border-radius: 70% 0 70% 0;
-    }
-    .fly-leaf:nth-child(3n) {
-      background: #f4acb7; /* Pink petal */
-    }
-    .fly-leaf:nth-child(5n) {
-      background: #ffcad4; /* Soft blossom pink */
-    }
-
-    /* Autumn override */
-    body.autumn .fly-leaf { background: #e07b39; }
-    body.autumn .fly-leaf:nth-child(2n) { background: #d35400; }
-    body.autumn .fly-leaf:nth-child(3n) { background: #f39c12; }
-    body.autumn .fly-leaf:nth-child(5n) { background: #c0392b; }
-
+    .fly-leaf.leaf-green { background: #8fc9a8; }
+    .fly-leaf.leaf-pink  { background: #ffb7c5; }
+    body.autumn .fly-leaf { background: #d97742 !important; }
+    body.night .fly-leaf { background: #6366f1 !important; opacity: 0.35; }
     @keyframes leaf-fly {
       0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
       10%  { opacity: 0.7; }
@@ -203,11 +208,19 @@
       100% { transform: translate(var(--tx), 110vh) rotate(var(--rot)); opacity: 0; }
     }
 
-    /* Control buttons styling */
-    .control-btn {
+    /* Control Buttons & Weather Expansion */
+    .controls-container {
       position: fixed;
+      top: 18px;
       right: 18px;
       z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .control-btn {
       background: rgba(255,255,255,0.85);
       border: 1.5px solid rgba(180, 200, 180, 0.6);
       border-radius: 50px;
@@ -224,53 +237,126 @@
       align-items: center;
       gap: 7px;
     }
-    .season-btn {
-      top: 18px;
+    body.night .control-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: var(--text);
+    }
+    .control-btn:hover { transform: scale(1.05); background: rgba(255,255,255,0.95); }
+    body.night .control-btn:hover { background: rgba(30, 41, 59, 0.95); }
+    .wind-btn.active { background: var(--theme-active-bg); border-color: var(--theme-active-border); }
+
+    /* Expandable Weather Control Button */
+    .weather-menu-wrapper {
+      position: relative;
+    }
+    .weather-expand-btn {
       border-color: var(--theme-active-border);
       background: var(--theme-active-bg);
       color: var(--theme-accent);
     }
-    .wind-btn {
-      top: 70px;
+    .weather-options {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--theme-active-border);
+      border-radius: 50px;
+      padding: 5px;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      clip-path: inset(0 50% 0 50%);
+      transition: clip-path 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     }
-    .control-btn:hover {
-      transform: scale(1.05);
-      background: rgba(255,255,255,0.95);
+    body.night .weather-options {
+      background: rgba(30, 41, 59, 0.92);
     }
-    .wind-btn.active {
-      background: var(--theme-active-bg);
-      border-color: var(--theme-active-border);
+    .weather-menu-wrapper.open .weather-options {
+      opacity: 1;
+      pointer-events: auto;
+      clip-path: inset(0 0% 0 0%);
+    }
+    .weather-opt-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .weather-opt-btn:hover {
+      background: rgba(0,0,0,0.06);
+    }
+    body.night .weather-opt-btn:hover {
+      background: rgba(255,255,255,0.1);
     }
 
-    /* Main Container Structure */
-    .content {
+    /* Expand / Collapse Links Button */
+    .collapse-btn {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .collapse-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.8);
+    }
+
+    /* STAGE CONTAINER */
+    .page-viewport {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: relative;
       z-index: 2;
+    }
+
+    .main-stage {
+      position: relative;
+      width: 600px;
+      height: 700px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 36px 16px 0;
-      width: 100%;
-      max-width: 560px;
-      min-height: 100vh;
+      justify-content: flex-start;
+      margin: 0 auto;
+      flex-shrink: 0;
     }
 
-    header { text-align: center; margin-bottom: 8px; }
+    header { 
+      text-align: center; 
+      margin-top: -100px;
+      position: relative;
+      z-index: 10;
+    }
 
     .avatar {
-      width: 86px; height: 86px;
+      width: 80px; height: 80px;
       border-radius: 50%;
       border: 3px solid rgba(255,255,255,0.9);
       box-shadow: var(--soft-shadow);
       background: linear-gradient(145deg, #d4efe8, #e2d4f0);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.1rem;
-      margin: 0 auto 12px;
+      font-size: 2rem;
+      margin: 0 auto 10px;
       animation: soft-pulse 4.5s ease-in-out infinite;
-      transition: background 0.6s ease;
     }
-    body.autumn .avatar {
-      background: linear-gradient(145deg, #f5d9b8, #e8c4a0);
+    body.night .avatar {
+      background: linear-gradient(145deg, #1e293b, #334155);
+      border-color: rgba(255,255,255,0.2);
     }
     @keyframes soft-pulse {
       0%, 100% { transform: scale(1); }
@@ -280,145 +366,176 @@
     h1 {
       font-family: 'Playfair Display', serif;
       font-weight: 500;
-      font-size: 1.9rem;
-      color: #3d3229;
-      margin-bottom: 5px;
-      letter-spacing: 0.4px;
+      font-size: 1.8rem;
+      color: var(--text);
+      margin-bottom: 4px;
+      transition: color 0.8s ease;
     }
 
     .bio {
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       opacity: 0.72;
-      line-height: 1.5;
+      line-height: 1.4;
       max-width: 260px;
     }
 
-    /* Fixed Ground Scene — Removes bottom white space completely */
+    /* Ground Hills */
     .ground-wrapper {
-      position: fixed;
+      position: absolute;
       bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 160px;
+      left: -500px;
+      right: -500px;
+      height: 140px;
       z-index: 1;
       pointer-events: none;
+      overflow: hidden;
     }
 
     .hills {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--hill3); /* Fallback solid color for screen bottom */
     }
     .hill {
       position: absolute;
-      bottom: 0;
+      bottom: -10px;
       border-radius: 50% 50% 0 0;
       transition: background 0.8s ease;
     }
-    .hill-1 {
-      width: 140%; height: 260px;
-      left: -20%;
-      background: var(--hill1);
-      opacity: 0.85;
+    .hill-1 { 
+      width: 900px; height: 160px; left: 50%; 
+      transform: translateX(-50%); 
+      background: var(--hill1); 
+      opacity: 0.9; 
     }
-    .hill-2 {
-      width: 110%; height: 210px;
-      left: -5%;
-      background: var(--hill2);
-      opacity: 0.9;
+    .hill-2 { 
+      width: 1200px; height: 130px; left: 50%; 
+      transform: translateX(-56%); 
+      background: var(--hill2); 
+      opacity: 0.95; 
     }
-    .hill-3 {
-      width: 130%; height: 160px;
-      left: -15%;
-      background: var(--hill3);
+    .hill-3 { 
+      width: 1600px; height: 100px; left: 50%; 
+      transform: translateX(-50%); 
+      background: var(--hill3); 
     }
 
-    /* Tree Scene */
+    /* Tree Container & Elements */
     .tree-scene {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      height: 480px;
-      margin-top: auto;
-      margin-bottom: 20px;
+      position: absolute;
+      top: 210px;
+      width: 480px;
+      height: 420px;
       z-index: 2;
     }
 
     .tree-img {
       position: absolute;
       left: 50%;
-      bottom: 70px;
+      bottom: 0;
       transform: translateX(-50%);
-      width: 650px;
-      max-width: none;
+      width: 530px;
       height: auto;
       filter: drop-shadow(0 12px 18px rgba(90, 70, 50, 0.15)) sepia(0.15) hue-rotate(70deg) saturate(1.4);
-      transition: filter 0.7s ease;
       pointer-events: none;
+      transition: filter 0.8s ease;
     }
     body.autumn .tree-img {
-      filter: drop-shadow(0 12px 18px rgba(90, 70, 50, 0.18));
+      filter: drop-shadow(0 12px 18px rgba(90, 70, 50, 0.15)) sepia(0.3) hue-rotate(15deg) saturate(1.6);
+    }
+    body.night .tree-img {
+      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.4)) brightness(0.7) hue-rotate(180deg) saturate(0.8);
     }
 
     .hanging-links {
       position: absolute;
       inset: 0;
       pointer-events: none;
+      left: 30px;
+      top: -20px;
     }
 
     .link-item {
       position: absolute;
+      width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       pointer-events: auto;
       transform-origin: top center;
-      transition: top 1.45s cubic-bezier(0.4, 0.0, 0.7, 0.15),
-                  left 1.45s cubic-bezier(0.35, 0.1, 0.55, 1);
+      transition: top 0.9s cubic-bezier(0.34, 1.25, 0.64, 1), left 0.9s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
+    /* 1. Stationary Hanging String */
     .string {
       width: 1.6px;
       background: linear-gradient(to bottom, transparent 0%, #c4b09a 12%, #c4b09a 100%);
       border-radius: 2px;
       opacity: 0.75;
-      transition: opacity 0.5s, height 0.5s;
+      flex-shrink: 0;
+      transition: opacity 0.3s ease;
     }
 
+    /* 2. Symmetric Center-Anchored Expanding Pill */
     .tag {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      padding: 10px 15px;
+      padding: 7px 13px;
       border-radius: 50px;
       background: rgba(255,255,255,0.94);
       box-shadow: var(--soft-shadow);
       text-decoration: none;
-      color: var(--text);
+      color: #4a3f35;
       font-weight: 500;
-      font-size: 0.86rem;
-      transition: all 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+      font-size: 0.8rem;
       border: 1.5px solid rgba(255,255,255,0.85);
       white-space: nowrap;
       backdrop-filter: blur(3px);
       cursor: pointer;
+      transition: padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.2s ease, background 0.3s ease;
     }
+
     .tag:hover {
-      transform: translateY(-6px) scale(1.06);
-      box-shadow: 0 14px 32px rgba(100, 80, 60, 0.2);
+      transform: translateX(-50%) scale(1.04);
     }
+
     .tag .icon {
-      width: 20px; height: 20px;
+      width: 18px; 
+      height: 18px;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.74rem;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      font-size: 0.7rem;
       flex-shrink: 0;
       font-weight: 600;
     }
+
     .tag .label {
-      transition: opacity 0.35s, width 0.35s, margin 0.35s;
+      display: inline-block;
+      vertical-align: middle;
+      white-space: nowrap;
+      max-width: 150px;
+      opacity: 1;
+      transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+
+    /* Icon-only collapsed state */
+    .tag.collapsed, body.tags-collapsed .tag {
+      padding: 5px;
+      gap: 0;
+    }
+
+    .tag.collapsed .label, body.tags-collapsed .tag .label {
+      max-width: 0;
+      opacity: 0;
+      margin: 0;
+      overflow: hidden;
     }
 
     .tag.github    { background: linear-gradient(135deg, #f2f5f8, #e6edf4); }
@@ -442,49 +559,37 @@
       50%      { transform: rotate(3.6deg); }
     }
 
-    body.wind-on .sway-1,
-    body.wind-on .sway-2,
-    body.wind-on .sway-3,
-    body.wind-on .sway-4,
-    body.wind-on .sway-5,
-    body.wind-on .sway-6,
-    body.wind-on .sway-7 {
-      animation-duration: 1.8s !important;
-    }
+    /* Branch Positions */
+    .item-1 { top: 40px; left: 80px; }
+    .item-2 { top: 30px; left: 325px; }
+    .item-3 { top: 105px; left: 50px; }
+    .item-4 { top: 95px; left: 360px; }
+    .item-5 { top: 165px; left: 95px; }
+    .item-6 { top: 155px; left: 315px; }
+    .item-7 { top: 220px; left: 205px; }
 
-    /* Hanging positions */
-.item-1 { top: -90px; left: 4%; }
-.item-2 { top: -105px; left: 60%; }
-.item-3 { top: -40px; left: -2%; }
-.item-4 { top: -50px; left: 66%; }
-.item-5 { top: 20px; left: 8%; }
-.item-6 { top: 10px; left: 58%; }
-.item-7 { top: 85px; left: 34%; }
+    .item-1 .string { height: 30px; }
+    .item-2 .string { height: 26px; }
+    .item-3 .string { height: 34px; }
+    .item-4 .string { height: 28px; }
+    .item-5 .string { height: 32px; }
+    .item-6 .string { height: 30px; }
+    .item-7 .string { height: 24px; }
 
-    .item-1 .string { height: 46px; }
-    .item-2 .string { height: 40px; }
-    .item-3 .string { height: 50px; }
-    .item-4 .string { height: 44px; }
-    .item-5 .string { height: 48px; }
-    .item-6 .string { height: 46px; }
-    .item-7 .string { height: 38px; }
-
-    /* Individual click fall */
-    .link-item.falling {
-      animation: none !important;
-      z-index: 30;
-    }
+    /* Natural Falling Physics & Acceleration */
+    .link-item.falling { animation: none !important; z-index: 30; }
+    .link-item.falling .string { opacity: 0; transition: opacity 0.15s ease; }
     .link-item.falling .tag {
-      animation: fruit-fall 0.9s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+      animation: gravity-drop 0.9s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
       pointer-events: none;
     }
-    @keyframes fruit-fall {
-      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-      40%  { transform: translateY(50px) rotate(14deg) scale(1.05); opacity: 1; }
-      100% { transform: translateY(240px) rotate(30deg) scale(0.7); opacity: 0; }
+    @keyframes gravity-drop {
+      0%   { transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      25%  { transform: translateX(-50%) translateY(25px) rotate(-12deg) scale(1.02); }
+      65%  { transform: translateX(-50%) translateY(160px) rotate(45deg) scale(0.85); opacity: 0.9; }
+      100% { transform: translateX(-50%) translateY(310px) rotate(110deg) scale(0.45); opacity: 0; }
     }
 
-    /* Portal */
     .portal {
       position: fixed;
       border-radius: 50%;
@@ -492,96 +597,76 @@
       z-index: 100;
       transform: translate(-50%, -50%) scale(0);
       opacity: 0;
-      background: radial-gradient(circle,
-        rgba(255,255,255,0.95) 0%,
-        rgba(180, 230, 200, 0.7) 40%,
-        rgba(160, 210, 190, 0.3) 70%,
-        transparent 100%);
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(180, 230, 200, 0.7) 40%, transparent 100%);
       box-shadow: 0 0 80px 40px rgba(170, 220, 190, 0.35);
     }
-    .portal.active {
-      animation: portal-expand 0.95s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
-    }
+    .portal.active { animation: portal-expand 0.95s cubic-bezier(0.15, 0.85, 0.3, 1) forwards; }
     @keyframes portal-expand {
       0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.95; }
-      55%  { opacity: 1; }
       100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
     }
 
-    /* Harvest mode */
-    body.wind-on .link-item .string {
-      opacity: 0;
-      height: 0;
-    }
-    body.wind-on .tag .label {
-      opacity: 0;
-      width: 0;
-      margin: 0;
-      overflow: hidden;
-    }
-    body.wind-on .tag {
-      padding: 10px;
-      border-radius: 50%;
-      gap: 0;
-    }
-    body.wind-on .link-item {
+    /* Fixed Harvest Physics */
+    body.wind-on .link-item .string { opacity: 0; }
+    body.wind-on .tag { padding: 5px; gap: 0; }
+    body.wind-on .tag .label { max-width: 0; opacity: 0; margin: 0; overflow: hidden; }
+    body.wind-on .link-item { 
       animation: none !important;
-      transform-origin: center center;
+      transition: top 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    }
+    body.wind-on .link-item.settled { 
+      animation: vertical-settle 2.5s ease-in-out infinite alternate !important; 
+    }
+    @keyframes vertical-settle {
+      0%   { transform: translateY(0) rotate(var(--settle-angle, -10deg)); }
+      100% { transform: translateY(-3px) rotate(calc(var(--settle-angle, -10deg) + 6deg)); }
     }
 
-    body.wind-on .link-item.rolling {
-      animation: ground-roll 2.6s ease-in-out infinite alternate !important;
-    }
-    @keyframes ground-roll {
-      0%   { transform: rotate(-13deg) translateX(-5px); }
-      100% { transform: rotate(13deg) translateX(5px); }
-    }
-
-    /* Seamless Footer sitting inside the green land */
+    /* Footer */
     footer {
-      position: fixed;
-      bottom: 12px;
+      position: absolute;
+      bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 0.78rem;
-      color: rgba(74, 63, 53, 0.75);
-      letter-spacing: 0.3px;
+      font-size: 0.75rem;
+      color: var(--text);
+      opacity: 0.85;
       z-index: 10;
       pointer-events: none;
-    }
-
-    @media (max-width: 480px) {
-      .tree-scene { height: 400px; }
-      .tree-img { width: 320px; }
-      .tag { padding: 9px 13px; font-size: 0.82rem; gap: 6px; }
-      .item-1 { left: -2%; }
-      .item-2 { left: 56%; }
-      .item-3 { left: -6%; }
-      .item-4 { left: 60%; }
-      .item-5 { left: 2%; }
-      .item-6 { left: 52%; }
-      .item-7 { left: 28%; }
-      .sun { width: 52px; height: 52px; }
-      .control-btn { right: 12px; padding: 8px 14px; font-size: 0.8rem; }
-      .season-btn { top: 12px; }
-      .wind-btn { top: 58px; }
+      white-space: nowrap;
+      transition: color 0.8s ease;
     }
   </style>
 </head>
 <body class="spring">
 
-  <!-- Season Control Button with dynamic state and icon -->
-  <button class="control-btn season-btn" id="seasonBtn">
-    <span id="seasonIcon">🌸</span>
-    <span id="seasonLabel">Spring</span>
-  </button>
+  <div class="controls-container">
+    <div class="weather-menu-wrapper" id="weatherMenu">
+      <button class="control-btn weather-expand-btn" id="weatherToggleBtn">
+        <span id="seasonIcon">🌸</span>
+        <span id="seasonLabel">Spring</span>
+      </button>
 
-  <button class="control-btn wind-btn" id="windBtn">
-    <span>🍃</span>
-    <span id="windLabel">Harvest</span>
-  </button>
+      <div class="weather-options">
+        <button class="weather-opt-btn" data-theme="spring">🌸 Spring</button>
+        <button class="weather-opt-btn" data-theme="autumn">🍂 Autumn</button>
+        <button class="weather-opt-btn" data-theme="night">✨ Starry Night</button>
+      </div>
+    </div>
+
+    <button class="control-btn wind-btn" id="windBtn">
+      <span>🍃</span>
+      <span id="windLabel">Harvest</span>
+    </button>
+
+    <button class="control-btn collapse-btn" id="collapseBtn">
+      <span>🍎</span>
+      <span id="collapseLabel">Collapse</span>
+    </button>
+  </div>
 
   <div class="scenery">
+    <div class="stars" id="starsBox"></div>
     <div class="sun"></div>
     <div class="cloud cloud-1"></div>
     <div class="cloud cloud-2"></div>
@@ -590,92 +675,93 @@
 
   <div id="particles" class="scenery"></div>
   <div id="leaves" class="scenery"></div>
-
-  <!-- Ground hills locked to screen bottom -->
-  <div class="ground-wrapper">
-    <div class="hills">
-      <div class="hill hill-1"></div>
-      <div class="hill hill-2"></div>
-      <div class="hill hill-3"></div>
-    </div>
-  </div>
-
   <div class="portal" id="portal"></div>
 
-  <div class="content">
-    <header>
-      <div class="avatar">🌿</div>
-      <h1>Saipriyank Gadepalli</h1>
-      <p class="bio">just a person on the internet.<br>i make stuff sometimes.</p>
-    </header>
+  <div class="page-viewport">
+    <div class="main-stage">
+      
+      <header>
+        <div class="avatar">🌿</div>
+        <h1>Saipriyank Gadepalli</h1>
+        <p class="bio">just a person on the internet.<br>i make stuff sometimes.</p>
+      </header>
 
-    <div class="tree-scene">
-      <img class="tree-img" src="tree Background Removed.png" alt="Tree" />
+      <div class="tree-scene">
+        <img class="tree-img" src="tree Background Removed.png" alt="Tree" />
 
-      <div class="hanging-links">
-        <div class="link-item item-1 sway-1">
-          <div class="string"></div>
-          <a class="tag github" href="https://github.com" data-url="https://github.com">
-            <span class="icon" style="background:#24292e;color:#fff;">⌘</span>
-            <span class="label">GitHub</span>
-          </a>
-        </div>
+        <div class="hanging-links">
+          <div class="link-item item-1 sway-1">
+            <div class="string"></div>
+            <a class="tag github" href="https://github.com" data-url="https://github.com">
+              <span class="icon" style="background:#24292e;color:#fff;">⌘</span>
+              <span class="label">GitHub</span>
+            </a>
+          </div>
 
-        <div class="link-item item-2 sway-2">
-          <div class="string"></div>
-          <a class="tag linkedin" href="https://linkedin.com" data-url="https://linkedin.com">
-            <span class="icon" style="background:#0a66c2;color:#fff;">in</span>
-            <span class="label">LinkedIn</span>
-          </a>
-        </div>
+          <div class="link-item item-2 sway-2">
+            <div class="string"></div>
+            <a class="tag linkedin" href="https://linkedin.com" data-url="https://linkedin.com">
+              <span class="icon" style="background:#0a66c2;color:#fff;">in</span>
+              <span class="label">LinkedIn</span>
+            </a>
+          </div>
 
-        <div class="link-item item-3 sway-3">
-          <div class="string"></div>
-          <a class="tag linktree" href="https://linktr.ee" data-url="https://linktr.ee">
-            <span class="icon" style="background:#43e55e;color:#fff;">🍃</span>
-            <span class="label">Linktree</span>
-          </a>
-        </div>
+          <div class="link-item item-3 sway-3">
+            <div class="string"></div>
+            <a class="tag linktree" href="https://linktr.ee" data-url="https://linktr.ee">
+              <span class="icon" style="background:#43e55e;color:#fff;">🍃</span>
+              <span class="label">Linktree</span>
+            </a>
+          </div>
 
-        <div class="link-item item-4 sway-4">
-          <div class="string"></div>
-          <a class="tag codedex" href="https://www.codedex.io" data-url="https://www.codedex.io">
-            <span class="icon" style="background:#7c5cfc;color:#fff;">✦</span>
-            <span class="label">Codédex</span>
-          </a>
-        </div>
+          <div class="link-item item-4 sway-4">
+            <div class="string"></div>
+            <a class="tag codedex" href="https://www.codedex.io" data-url="https://www.codedex.io">
+              <span class="icon" style="background:#7c5cfc;color:#fff;">✦</span>
+              <span class="label">Codédex</span>
+            </a>
+          </div>
 
-        <div class="link-item item-5 sway-5">
-          <div class="string"></div>
-          <a class="tag youtube" href="#" data-url="#">
-            <span class="icon" style="background:#ff0000;color:#fff;">▶</span>
-            <span class="label">YouTube</span>
-          </a>
-        </div>
+          <div class="link-item item-5 sway-5">
+            <div class="string"></div>
+            <a class="tag youtube" href="#" data-url="#">
+              <span class="icon" style="background:#ff0000;color:#fff;">▶</span>
+              <span class="label">YouTube</span>
+            </a>
+          </div>
 
-        <div class="link-item item-6 sway-6">
-          <div class="string"></div>
-          <a class="tag portfolio" href="#" data-url="#">
-            <span class="icon" style="background:#e8a87c;color:#fff;">◈</span>
-            <span class="label">Portfolio</span>
-          </a>
-        </div>
+          <div class="link-item item-6 sway-6">
+            <div class="string"></div>
+            <a class="tag portfolio" href="#" data-url="#">
+              <span class="icon" style="background:#e8a87c;color:#fff;">◈</span>
+              <span class="label">Portfolio</span>
+            </a>
+          </div>
 
-        <div class="link-item item-7 sway-7">
-          <div class="string"></div>
-          <a class="tag email" href="mailto:hello@example.com" data-url="mailto:hello@example.com">
-            <span class="icon" style="background:#5b8def;color:#fff;">✉</span>
-            <span class="label">Email Me</span>
-          </a>
+          <div class="link-item item-7 sway-7">
+            <div class="string"></div>
+            <a class="tag email" href="mailto:hello@example.com" data-url="mailto:hello@example.com">
+              <span class="icon" style="background:#5b8def;color:#fff;">✉</span>
+              <span class="label">Email Me</span>
+            </a>
+          </div>
         </div>
       </div>
+
+      <div class="ground-wrapper">
+        <div class="hills">
+          <div class="hill hill-3"></div>
+          <div class="hill hill-2"></div>
+          <div class="hill hill-1"></div>
+        </div>
+      </div>
+
+      <footer>Made with ❤️ by Saipriyank Gadepalli</footer>
     </div>
   </div>
 
-  <footer>Made with 🌿 by Saipriyank Gadepalli</footer>
-
   <script>
-    // particles
+    /* Background Particles */
     const container = document.getElementById('particles');
     for (let i = 0; i < 16; i++) {
       const p = document.createElement('div');
@@ -688,11 +774,25 @@
       container.appendChild(p);
     }
 
-    // flying leaves (18 total - mixed colors)
+    /* Starry Night Stars Generation */
+    const starsBox = document.getElementById('starsBox');
+    for (let i = 0; i < 35; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 60 + '%';
+      const size = 1.5 + Math.random() * 2.5;
+      star.style.width = star.style.height = size + 'px';
+      star.style.animationDuration = (2 + Math.random() * 4) + 's';
+      star.style.animationDelay = (Math.random() * 3) + 's';
+      starsBox.appendChild(star);
+    }
+
+    /* Flying Leaves Generation */
     const leafBox = document.getElementById('leaves');
     for (let i = 0; i < 18; i++) {
       const leaf = document.createElement('div');
-      leaf.className = 'fly-leaf';
+      leaf.className = 'fly-leaf ' + (i % 2 === 0 ? 'leaf-green' : 'leaf-pink');
       leaf.style.left = Math.random() * 100 + '%';
       leaf.style.top = -20 - Math.random() * 60 + 'px';
       leaf.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
@@ -705,13 +805,14 @@
       leafBox.appendChild(leaf);
     }
 
-    // portal + individual click fall
     const portal = document.getElementById('portal');
     let busy = false;
 
+    /* Interactive Link Click Handler */
     document.querySelectorAll('.tag').forEach(tag => {
       tag.addEventListener('click', function (e) {
         e.preventDefault();
+
         if (busy) return;
         busy = true;
 
@@ -755,13 +856,13 @@
               busy = false;
             }
           }, 750);
-        }, 800);
+        }, 850);
       });
     });
 
-    // Harvest – natural gravity fall + non-overlapping landing + roll
     const windBtn = document.getElementById('windBtn');
     const windLabel = document.getElementById('windLabel');
+    const collapseBtn = document.getElementById('collapseBtn');
     let windActive = false;
 
     windBtn.addEventListener('click', () => {
@@ -770,70 +871,77 @@
       windBtn.classList.toggle('active', windActive);
       windLabel.textContent = windActive ? 'Restore' : 'Harvest';
 
+      collapseBtn.classList.toggle('hidden', windActive);
+
       const items = document.querySelectorAll('.link-item');
 
       if (windActive) {
-        const placed = [];
-
         items.forEach((item, index) => {
           setTimeout(() => {
-            let left, top, attempts = 0;
-            const minDist = 11;
+            const top = 335 + (index % 2) * 12;
+            const angle = (Math.random() * 40 - 20) + 'deg';
+            item.style.setProperty('--settle-angle', angle);
 
-            do {
-              left = 6 + Math.random() * 82;
-              top  = 380 + Math.random() * 30;
-              attempts++;
-            } while (
-              attempts < 25 &&
-              placed.some(p => {
-                const dx = Math.abs(p.left - left);
-                const dy = Math.abs(p.top - top) / 8;
-                return Math.hypot(dx, dy) < minDist;
-              })
-            );
-
-            placed.push({ left, top });
-
-            item.style.top  = top + 'px';
-            item.style.left = left + '%';
+            item.style.top = top + 'px';
 
             setTimeout(() => {
-              item.classList.add('rolling');
-            }, 1500);
-          }, index * 90 + Math.random() * 40);
+              item.classList.add('settled');
+            }, 800);
+          }, index * 90);
         });
       } else {
         items.forEach(item => {
-          item.classList.remove('rolling');
-          item.style.top  = '';
-          item.style.left = '';
+          item.classList.remove('settled');
+          item.style.top = '';
         });
       }
     });
 
-    // Spring / Autumn theme toggle
-    const seasonBtn = document.getElementById('seasonBtn');
+    /* Global Expand / Collapse Links Button */
+    const collapseLabel = document.getElementById('collapseLabel');
+    let tagsCollapsed = false;
+
+    collapseBtn.addEventListener('click', () => {
+      tagsCollapsed = !tagsCollapsed;
+      document.body.classList.toggle('tags-collapsed', tagsCollapsed);
+      collapseLabel.textContent = tagsCollapsed ? 'Expand' : 'Collapse';
+    });
+
+    /* Weather Controls */
+    const weatherMenu = document.getElementById('weatherMenu');
+    const weatherToggleBtn = document.getElementById('weatherToggleBtn');
     const seasonLabel = document.getElementById('seasonLabel');
     const seasonIcon = document.getElementById('seasonIcon');
-    let currentSeason = 'spring';
 
-    seasonBtn.addEventListener('click', () => {
-      if (currentSeason === 'spring') {
-        currentSeason = 'autumn';
-        document.body.classList.remove('spring');
-        document.body.classList.add('autumn');
-        seasonLabel.textContent = 'Autumn';
-        seasonIcon.textContent = '🍂';
-      } else {
-        currentSeason = 'spring';
-        document.body.classList.remove('autumn');
-        document.body.classList.add('spring');
-        seasonLabel.textContent = 'Spring';
-        seasonIcon.textContent = '🌸';
-      }
+    weatherToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      weatherMenu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', () => {
+      weatherMenu.classList.remove('open');
+    });
+
+    const themes = {
+      spring: { label: 'Spring', icon: '🌸' },
+      autumn: { label: 'Autumn', icon: '🍂' },
+      night:  { label: 'Starry Night', icon: '✨' }
+    };
+
+    document.querySelectorAll('.weather-opt-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const selectedTheme = this.getAttribute('data-theme');
+        
+        document.body.classList.remove('spring', 'autumn', 'night');
+        document.body.classList.add(selectedTheme);
+
+        seasonLabel.textContent = themes[selectedTheme].label;
+        seasonIcon.textContent = themes[selectedTheme].icon;
+
+        weatherMenu.classList.remove('open');
+      });
     });
   </script>
 </body>
 </html>
-
